@@ -1,0 +1,5 @@
+/target
+/api-server/.g8
+/api-server/.idea
+/api-server/logs
+/api-server/target
