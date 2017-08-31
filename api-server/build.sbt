@@ -1,5 +1,5 @@
 name := """api-server"""
-organization := "com.example"
+organization := "com.sharp7c0000"
 
 version := "1.0-SNAPSHOT"
 
@@ -10,14 +10,11 @@ scalaVersion := "2.12.2"
 libraryDependencies ++= Seq(
   ws,
   guice,
-  "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.0" % Test
+  "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.0" % Test,
+  "com.pauldijou" %% "jwt-play" % "0.14.0"
 )
 
-//libraryDependencies += guice
-//libraryDependencies += "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.0" % Test
+routesGenerator := InjectedRoutesGenerator
 
-// Adds additional packages into Twirl
-//TwirlKeys.templateImports += "com.example.controllers._"
-
-// Adds additional packages into conf/routes
-// play.sbt.routes.RoutesKeys.routesImport += "com.example.binders._"
+// for vagrant
+PlayKeys.fileWatchService := play.dev.filewatch.FileWatchService.sbt(1000)
