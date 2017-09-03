@@ -38,7 +38,7 @@
     <router-view v-if="sessionInfo"></router-view>
 
     <div v-else>
-      <a class="button" href="/auth/twitter" type="button">Twitter Login</a>
+      <a class="button" href="/api/auth/twitter" type="button">Twitter Login</a>
     </div>
 
 
