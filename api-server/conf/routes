@@ -9,11 +9,10 @@ GET     /                           controllers.HomeController.index
 #
 
 # Auth controller
-GET /auth/twitter                   controllers.AuthController.fromTwitter
+GET /auth/twitter/request         controllers.AuthController.fromTwitter
+GET /auth/twitter/signin          controllers.AuthController.twitterSignIn(oauthToken: String, oauthVerifier: String)
 
 #
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
-
-

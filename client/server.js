@@ -1,12 +1,13 @@
-const fs         = require('fs');
-const path       = require('path');
-const Hapi       = require('hapi');
-const Vue        = require('vue');
-const Wreck      = require('wreck');
-const Bell       = require('bell');
-const AuthCookie = require('hapi-auth-cookie');
-const Inert      = require('inert');
-const H2O2       = require('h2o2');
+const fs          = require('fs');
+const path        = require('path');
+const Hapi        = require('hapi');
+const Vue         = require('vue');
+const Wreck       = require('wreck');
+const Bell        = require('bell');
+const AuthCookie  = require('hapi-auth-cookie');
+const Inert       = require('inert');
+const H2O2        = require('h2o2');
+const querystring = require('querystring');
 
 const isProd = process.env.NODE_ENV === 'production';
 
@@ -36,7 +37,7 @@ function createRenderer (bundle, options) {
 
 function render (request, reply) {
 
-  const context = { url: request.params.param, session: request.auth.credentials };
+  const context = { url: request.params.param, query: request.query, session: request.auth.credentials };
 
   renderer.renderToString(context, (err, html) => {
     if (err) {
@@ -96,7 +97,7 @@ server.register([AuthCookie, Bell, Inert, H2O2], (err) => {
        redirects  : 5,
        passThrough: true,
         mapUri: function (request, callback) {
-          callback(null, `http://localhost:9000/${request.params.param}`);
+          callback(null, `http://localhost:9000/${request.params.param}?${querystring.stringify(request.query)}`);
         },
       }
     }

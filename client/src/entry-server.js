@@ -10,7 +10,14 @@ export default context => {
 
     //console.log('str', store.state);
 
-    router.push(context.url);
+    console.log("!!!!", context.query);
+
+    //router.push(context.url);
+
+    router.push({
+      path : context.url,
+      query: context.query
+    });
 
     router.onReady(() => {
       const matchedComponents = router.getMatchedComponents()

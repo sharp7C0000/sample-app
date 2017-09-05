@@ -35,10 +35,10 @@
 
     {{sessionInfo}}
 
-    <router-view v-if="sessionInfo"></router-view>
+    <router-view></router-view>
 
-    <div v-else>
-      <a class="button" href="/api/auth/twitter" type="button">Twitter Login</a>
+    <div>
+      <a class="button" href="/api/auth/twitter/request" type="button">Twitter Login</a>
     </div>
 
 
@@ -59,6 +59,10 @@
       ...mapState({
         sessionInfo: (state) => state.session
       })
+    },
+
+    created () {
+      //console.log("fuck you2", this.$router, this.$route.query)
     },
 
     asyncData ({ store, route }) {
