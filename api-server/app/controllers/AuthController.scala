@@ -34,31 +34,68 @@ class AuthController @Inject()(ws: WSClient, ec: ExecutionContext, cc: Controlle
     "https://api.twitter.com/oauth/authorize", KEY),
     true)
 
+  def authorize = Action.async { implicit request: Request[AnyContent] =>
+
+    val body     = request.body
+    val jsonBody = body.asJson
+
+    jsonBody.map { json =>
+
+      val token  = json("oauthToken").as[String]
+      val secret = json("oauthSecret").as[String]
+
+      ws.url("https://api.twitter.com/1.1/account/verify_credentials.json")
+      .addQueryStringParameters("include_email" -> "false")
+      .sign(OAuthCalculator(KEY, RequestToken(token, secret)))
+      .get
+      .map(result => {
+
+        var session = JwtSession()
+        val s       = Session(result.json("id_str").as[String], token, secret)
+        session = session + ("session", s)
+
+        Ok(session.serialize)
+      })
+    }.getOrElse {
+      Future.successful(BadRequest("Expecting application/json request body"))
+    }
+  }
+
+  def authTwitter() = Action { implicit request: Request[AnyContent] =>
+    oauth.retrieveRequestToken(routes.AuthController.authTwitterCallback.absoluteURL()) match {
+      case Right(t) => {
+        Redirect(oauth.redirectUrl(t.token))
+      }
+      case Left(e) => throw e
+    }
+  }
+
+  def authTwitterCallback() = Action { implicit request: Request[AnyContent] =>
+
+    val oauthVerifier = request.getQueryString("oauth_verifier").mkString
+    val oauthToken    = request.getQueryString("oauth_token").mkString
+
+    oauth.retrieveAccessToken(RequestToken(oauthToken, ""), oauthVerifier) match {
+      case Right(t) => {
+        Redirect(s"http://localhost/login?oauth_token=${t.token}&oauth_secret=${t.secret}")
+      }
+      case Left(e) => throw e
+    }
+  }
+
+  
+
   def fromTwitter() = Action { implicit request: Request[AnyContent] =>
     oauth.retrieveRequestToken("http://localhost/page1") match {
       case Right(t) => {
-        Redirect(oauth.redirectUrl(t.token)).withSession("token" -> t.token, "secret" -> t.secret)
+        Redirect(oauth.redirectUrl(t.token))
       }
       case Left(e) => throw e
     }
   }
 
   def twitterSignIn(oauthToken: String, oauthVerifier: String) = Action.async { implicit request: Request[AnyContent] =>
-
-    //val verifier = request.getQueryString("oauth_verifier")
-
-    def sessionTokenPair(implicit request: RequestHeader): Option[RequestToken] = {
-      for {
-        token  <- request.session.get("token")
-        secret <- request.session.get("secret")
-      } yield {
-        RequestToken(token, secret)
-      }
-    }
-
-    val tokenPair = sessionTokenPair(request).get
-      
-    oauth.retrieveAccessToken(tokenPair, oauthVerifier) match {
+    oauth.retrieveAccessToken(RequestToken(oauthToken, ""), oauthVerifier) match {
       case Right(t) => {
         ws.url("https://api.twitter.com/1.1/account/verify_credentials.json")
         .addQueryStringParameters("include_email" -> "false")
@@ -66,7 +103,7 @@ class AuthController @Inject()(ws: WSClient, ec: ExecutionContext, cc: Controlle
         .get
         .map(result => {
           val session = Session(result.json("id_str").as[String], t.token, t.secret)
-          Ok("success").withNewSession.addingToJwtSession("Session", session)
+          Ok("success").addingToJwtSession("Session", session)
         })
       }
       case Left(e) => throw e

@@ -13,22 +13,28 @@
     
     asyncData ({ store, route }) {
       console.log("asyncing");
-      //console.log("asyning !!!!", store, route);
-      // return the Promise from the action
-      //return store.dispatch('fetchItem', route.params.id)
-      axios.get('http://0.0.0.0:8080/api/auth/twitter/signin', {
-        params: {
-          oauthToken   : route.query.oauth_token,
-          oauthVerifier: route.query.oauth_verifier
-        }
-      })
-      .then((response) => {
-        console.log(response, "fuck you");
-      })
-      .catch((error) => {
-        console.log(error);
-        //console.log(error.response.status);
-      });
+
+      if(route.query.oauth_token) {
+        axios.defaults.withCredentials = true;
+        //console.log("asyning !!!!", store, route);
+        // return the Promise from the action
+        //return store.dispatch('fetchItem', route.params.id)
+        axios.get('http://0.0.0.0:8080/api/auth/twitter/signin', {
+          params: {
+            oauthToken   : route.query.oauth_token,
+            oauthVerifier: route.query.oauth_verifier
+          }
+        })
+        .then((response) => {
+          console.log(response.headers.authorization, "fuck you");
+        })
+        .catch((error) => {
+          console.log(error);
+          //console.log(error.response.status);
+        });
+      }
+
+      
     },
 
     created () {

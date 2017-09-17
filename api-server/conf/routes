@@ -9,8 +9,9 @@ GET     /                           controllers.HomeController.index
 #
 
 # Auth controller
-GET /auth/twitter/request         controllers.AuthController.fromTwitter
-GET /auth/twitter/signin          controllers.AuthController.twitterSignIn(oauthToken: String, oauthVerifier: String)
+POST /auth/authorize               controllers.AuthController.authorize
+GET  /auth/twitter                 controllers.AuthController.authTwitter
+GET  /auth/twitter/callback        controllers.AuthController.authTwitterCallback
 
 #
 

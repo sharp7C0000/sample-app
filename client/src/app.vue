@@ -1,29 +1,16 @@
 <style lang="scss">
 
-  @import "styles/app.scss";
-
-  body {
-    background-color: #EAEAEA;
-  }
-
-  .body-wrapper {
-    background-color: #fff;
-    max-width: 1024px;
-    margin   : auto;
-    padding: 20px;
-
-    nav {
-      text-align: center;
-    }
-  }
+ @import "styles/app.scss";
 
 </style>
 
 <template>
 
   <div id="app" class="body-wrapper">
+
+    <router-view></router-view>
   
-    <nav>
+    <!--<nav>
       <h1>SSR Sample App1</h1>
 
       <section>
@@ -39,7 +26,7 @@
 
     <div>
       <a class="button" href="/api/auth/twitter/request" type="button">Twitter Login</a>
-    </div>
+    </div>-->
 
 
   </div>
@@ -49,6 +36,8 @@
 <script>
 
   import axios from "axios";
+
+  //import Style from "style-loader!css-loader!sass-loader!./styles/app.scss";
 
   import { mapState } from 'vuex';
 

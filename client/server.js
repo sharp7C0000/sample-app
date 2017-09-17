@@ -41,6 +41,7 @@ function render (request, reply) {
 
   renderer.renderToString(context, (err, html) => {
     if (err) {
+      console.log("!!!!", err)
       if (err.code === 404) {
         return reply('Page not found').code(404);
       } else {
@@ -89,18 +90,26 @@ server.register([AuthCookie, Bell, Inert, H2O2], (err) => {
   ///////////////// routers /////////////////////////////////
 
   // api proxy
+  const proxyHandler = {
+    proxy: {
+      redirects  : 5,
+      passThrough: true,
+      mapUri: function (request, callback) {
+        callback(null, `http://localhost:9000/${request.params.param}?${querystring.stringify(request.query)}`);
+      }
+    }
+  }
+  
   server.route({
     method: 'GET',
     path: '/api/{param*}',
-    handler: {
-      proxy: {
-       redirects  : 5,
-       passThrough: true,
-        mapUri: function (request, callback) {
-          callback(null, `http://localhost:9000/${request.params.param}?${querystring.stringify(request.query)}`);
-        },
-      }
-    }
+    handler: proxyHandler
+  });
+
+  server.route({
+    method: '*',
+    path: '/api/{param*}',
+    handler: proxyHandler
   });
 
   server.route({
