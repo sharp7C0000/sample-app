@@ -28,26 +28,10 @@ module.exports = {
         loader : 'babel-loader',
         exclude: /node_modules/
       },
-      // {
-      //   test   : /\.(png|jpg|gif|svg)$/,
-      //   loader : 'file-loader',
-      //   options: {
-      //     name: '[name].[ext]?[hash]'
-      //   }
-      // },
       {
         test: /\.(eot|svg|ttf|woff(2)?)(\?v=\d+\.\d+\.\d+)?/,
         loader: 'url-loader?limit=100000'
-      },
-      // {
-      //   test: /.(ttf|otf|eot|svg|woff(2)?)(\?[a-z0-9]+)?$/,
-      //   loader: 'file-loader',
-      //   options: {
-      //     name: '[name].[ext]',
-      //     outputPath: 'fonts/',    // where the fonts will go
-      //     publicPath: '../'       // override the default path
-      //   }
-      // }
+      }
     ]
   },
 

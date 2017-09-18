@@ -37,7 +37,7 @@
 
   import axios from "axios";
 
-  //import Style from "style-loader!css-loader!sass-loader!./styles/app.scss";
+  //import Style from "vue-style-loader!css-loader!sass-loader!./styles/app.scss";
 
   import { mapState } from 'vuex';
 
