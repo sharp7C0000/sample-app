@@ -1,58 +1,78 @@
 <style lang="scss">
 
-  #tgd-index {
+  #gm-index {
 
-    color: white;
-
-    max-width: 1024px;
-    margin   : auto;
-    padding  : 120px;
-
-    .brand, section, footer  {
-      text-align: center;
-    }
+    margin     : auto;
+    text-align : center;
+    padding-top: 150px;
 
     .brand {
-      font-size: 6rem;
-    }
+      h1 {
+        font-size: 6rem;
+      }
 
-    section {
-      .expl {
-        padding: 20px;
-        margin-bottom : 60px;
+      h5 {
+        opacity: 0.75;
       }
     }
+
+    .picture {
+      margin:50px;
+
+      i {
+        font-size: 12rem;
+        opacity  : 0.5;
+      }
+    }
+
+    footer {
+      margin-top: 60px;
+
+      h5 {
+        font-size: 1.25rem;
+      }
+    }
+
+    .button-large {
+  font-size: 1.4rem;
+  height: 4.5rem;
+  line-height: 4.5rem;
+  padding: 0 2rem;
+}
   }
 
 </style>
 
 <template>
-  <div id="tgd-index">
-    
-    <h1 class="brand">
-      Gallery Meh <i class="fa fa-meh-o"></i>
-    </h1>
+  <div id="gm-index">
 
-    <section style="margin-bottom:60px">
+    <div class="page-wrapper">
       
-      <p class="expl">
-        Awesome cool your twitter gallery<br><br>
-        <i class="fa fa-picture-o" aria-hidden="true" style="font-size:12rem;opacity:0.5"></i>
-      </p>
+      <section class="brand">
+        <h1>
+          Gallery Meh <i class="fa fa-meh-o"></i>
+        </h1>
+        <h5>
+          Awesome cool your twitter gallery
+        </h5>
+      </section>
+      
+      <figure class="picture">
+        <i class="fa fa-picture-o"></i>
+      </figure>
 
-      <section>
-        
+      <section class="login">
+        <a class="button button-primary button-large" href="/api/auth/twitter">
+          <i class="fa fa-twitter" aria-hidden="true"></i> Sign in from Twitter
+        </a>
       </section>
 
-      <a class="button button-primary" href="/api/auth/twitter">
-        <i class="fa fa-twitter" aria-hidden="true"></i> Sign in from Twitter
-      </a>
+      <footer>
+        <h5>
+          Created by <a href="">sharp7c0000</a>
+        </h5>        
+      </footer>
 
-    </section>
-
-    <footer>
-      github: sharp7c0timesfour
-    </footer>
-    
+    </div>
   </div>
 </template>
