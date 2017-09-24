@@ -10,7 +10,7 @@ GET     /                           controllers.HomeController.index
 
 # Auth controller
 POST /auth/authorize               controllers.AuthController.authorize
-GET  /auth/twitter                 controllers.AuthController.authTwitter
+GET  /auth/twitter                 controllers.AuthController.authTwitter(callbackUrl?="")
 GET  /auth/twitter/callback        controllers.AuthController.authTwitterCallback
 
 #

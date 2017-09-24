@@ -30,7 +30,7 @@
             console.log(response.data, "fuck you", route);
             //window.location = "/page1";
             router.push({
-              name: "p1"
+              name: "main"
             })
             resolve();
           })
