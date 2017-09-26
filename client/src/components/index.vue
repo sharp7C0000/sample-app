@@ -78,7 +78,7 @@
 
       <section class="login">
 
-        <div class="notification">
+        <div class="notification" v-if="$store.state.index.loginRequest == 'error'">
           오류 발생!!!
         </div>
 
@@ -105,24 +105,22 @@
     asyncData ({ store, route, router }) {
       // login 이후 callback으로 간주
       if(route.query.oauth_token && route.query.oauth_secret) {
-        return new Promise((resolve, reject) => {
-          axios.post('http://0.0.0.0:8080/api/auth/authorize', {
-           // oauthToken : route.query.oauth_token,
-           // oauthSecret: route.query.oauth_secret
-          })
-          .then((response) => {
-            router.push({
-              name: "main"
-            })
-            resolve();
-          })
-          .catch((error) => {
-            console.log("!!!!", error)
-            router.push({
-              name: "index"
-            });
-            resolve();
-          });
+        const loginAction = store.dispatch('login', {
+          oauthToken : route.query.oauth_token,
+          oauthSecret: route.query.oauth_secret
+        });
+        return loginAction;
+      }
+    },
+
+    mounted () {
+      if(this.$store.state.index.loginRequest == "success") {
+        this.$router.push({
+          name: "main"
+        })
+      } else {
+        this.$router.push({
+          name: "index"
         })
       }
     }
