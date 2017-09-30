@@ -3,8 +3,6 @@ import Vuex from 'vuex';
 
 import axios from "axios";
 
-import IndexModule from "./modules/index";
-
 Vue.use(Vuex);
 
 export function createStore () {
@@ -40,11 +38,6 @@ export function createStore () {
        // console.log("!!!!", state);
         Vue.set(state, "session", sessionData);
       }
-    },
-
-    modules: {
-      index: IndexModule
     }
-
   })
 }

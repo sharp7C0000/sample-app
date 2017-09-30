@@ -41,19 +41,6 @@
       line-height: 4.5rem;
       padding    : 0 2rem;
     }
-
-    // TODO : global noticifation 으로 변경
-    .notification {
-      position        : fixed;
-      top             : 0px;
-      left            : 0px;
-      width           : 100%;
-      height          : 50px;
-      background-color: $color-danger;
-      color           : white;
-      line-height     : 50px;
-      text-align      : center;
-    }
   }
 
 </style>
@@ -77,12 +64,7 @@
       </figure>
 
       <section class="login">
-
-        <div class="notification" v-if="$store.state.index.loginRequest == 'error'">
-          오류 발생!!!
-        </div>
-
-        <a class="button button-primary button-large" href="/api/auth/twitter?callbackUrl=http://localhost">
+        <a class="button button-primary button-large" href="/api/auth/twitter?callbackUrl=http://localhost/login">
           <i class="fa fa-twitter" aria-hidden="true"></i> Sign in from Twitter
         </a>
       </section>
@@ -96,34 +78,3 @@
     </div>
   </div>
 </template>
-
-<script>
-
-  import axios from "axios";
-
-  export default {
-    asyncData ({ store, route, router }) {
-      // login 이후 callback으로 간주
-      if(route.query.oauth_token && route.query.oauth_secret) {
-        const loginAction = store.dispatch('login', {
-          oauthToken : route.query.oauth_token,
-          oauthSecret: route.query.oauth_secret
-        });
-        return loginAction;
-      }
-    },
-
-    mounted () {
-      if(this.$store.state.index.loginRequest == "success") {
-        this.$router.push({
-          name: "main"
-        })
-      } else {
-        this.$router.push({
-          name: "index"
-        })
-      }
-    }
-  }
-
-</script>

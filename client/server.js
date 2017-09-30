@@ -41,7 +41,6 @@ function render (request, reply) {
 
   renderer.renderToString(context, (err, html) => {
     if (err) {
-      console.log("!!!!", err)
       if (err.code === 404) {
         return reply('Page not found').code(404);
       } else {

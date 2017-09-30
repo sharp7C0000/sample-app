@@ -5,15 +5,6 @@ export default context => {
   return new Promise((resolve, reject) => {
     const { app, router, store } = createApp()
 
-    // set initial session
-    store.commit("setSession", context.session);
-
-    //console.log('str', store.state);
-
-    console.log("!!!!", context.query);
-
-    //router.push(context.url);
-
     router.push({
       path : context.url,
       query: context.query
@@ -42,6 +33,8 @@ export default context => {
         // is used for the renderer, the state will automatically be
         // serialized and injected into the HTML as `window.__INITIAL_STATE__`.
         context.state = store.state
+
+        console.log("#####", context.state);
 
         //console.log('str2', store.state);
 
