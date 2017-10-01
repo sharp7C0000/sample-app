@@ -1,5 +1,7 @@
 <template>
-  <div>Login..</div>
+  <div id="gm-login">
+    <section>Login..</section>
+  </div>
 </template>
 
 <script>
@@ -8,7 +10,7 @@
 
   import axios from "axios";
 
-  import LoginModule from "store/modules/login";
+  import {status as requestStatus} from "classes/request";
 
   export default {
 
@@ -18,30 +20,20 @@
       })
     },
 
-    methods: {
-      ...mapActions([
-        "login"
-      ])
-    },
-    
     asyncData ({ store, route, router }) {
-      store.registerModule('login', LoginModule);
       return store.dispatch('login', {
         oauthToken : route.query.oauth_token,
         oauthSecret: route.query.oauth_secret
       });
     },
 
-    created () {
-      if(this.loginRequest.status == 'success') {
-        this.$router.push({
+    beforeMount () {
+      if(this.loginRequest.status == requestStatus.SUCCESS) {
+        this.$store.dispatch("updateAuthToken");
+        this.$router.replace({
           name: "main"
         });
       }
-    },
-
-    destroyed () {
-      this.$store.unregisterModule('login')
     }
   }
 

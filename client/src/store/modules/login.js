@@ -1,14 +1,20 @@
 import {fetch as fetchApi} from "api";
 
-import * as Request from "utils/request";
+import Request                   from "classes/request";
+import {status as requestStatus} from "classes/request";
+
+import * as Localstorage from "service/localstorage";
 
 const LOGIN_REQUEST = "LOGIN_REQUEST";
 const LOGIN_SUCCESS = "LOGIN_SUCCESS";
 const LOGIN_FAIL    = "LOGIN_FAIL";
 
+const DELETE_TEMP_AUTH_TOKEN = "UPDATE_AUTH_TOKEN";
+
 const state = function () {
   return {
-    request: Request.generateState()
+    authToken: null,
+    request  : new Request()
   }
 }
 
@@ -28,7 +34,7 @@ const actions = {
         }
       })
       .then((result) => {
-        commit(LOGIN_SUCCESS);
+        commit(LOGIN_SUCCESS, result);
         resolve();
       })
       .catch((error) => {
@@ -37,21 +43,32 @@ const actions = {
       })
     
     })
+  },
+
+  updateAuthToken ({commit, state}) {
+    // save token
+    Localstorage.save("authToken", state.authToken);
+    commit(DELETE_TEMP_AUTH_TOKEN); 
   }
 }
 
 const mutations = {
   [LOGIN_REQUEST] (state) {
-    state.request.status = "loading";
+    state.request.status = requestStatus.LOADING;
   },
 
-  [LOGIN_SUCCESS] (state) {
-    state.request.status = "success";
+  [LOGIN_SUCCESS] (state, authToken) {
+    state.authToken      = authToken;
+    state.request.status = requestStatus.SUCCESS;
   },
 
   [LOGIN_FAIL] (state, error) {
-    state.request.status = "fail";
-    state.reuqest.error  = error;
+    state.request.status = requestStatus.FAIL;
+    state.request.error  = error;
+  },
+
+  [DELETE_TEMP_AUTH_TOKEN] (state) {
+    state.authToken = null;
   }
 }
 
