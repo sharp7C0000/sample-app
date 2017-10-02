@@ -1,3 +1,11 @@
+<style lang="scss">
+
+  #gm-login {
+    padding: 10px;
+  }
+
+</style>
+
 <template>
   <div id="gm-login">
     <section>Login..</section>
@@ -6,10 +14,7 @@
 
 <script>
 
-  import {mapActions, mapState} from "vuex";
-
-  import axios from "axios";
-
+  import {mapActions, mapState}    from "vuex";
   import {status as requestStatus} from "classes/request";
 
   export default {

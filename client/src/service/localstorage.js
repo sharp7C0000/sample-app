@@ -9,7 +9,7 @@ export function save(key, value) {
 }
 
 export function get(key) {
-  window.localStorage.getItem(trimedKey(key));
+  return window.localStorage.getItem(trimedKey(key));
 }
 
 export function remove(key) {

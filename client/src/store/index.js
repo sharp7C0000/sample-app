@@ -1,9 +1,11 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 
-import axios from "axios";
+import * as Api from "api";
 
 import LoginModule from "./modules/login";
+
+import * as Localstorage from "service/localStorage";
 
 Vue.use(Vuex);
 
@@ -11,40 +13,43 @@ export function createStore () {
   return new Vuex.Store({
     
     state: {
-      session: null
+      
     },
 
     actions: {
-      sessionInfo ({ commit }, id) {
-        
-        axios.get('/api/current')
-        .then(function (response) {
-          commit("setSession", response);
+
+      callApi ({dispatch}, {name, options}) {
+        const apiInfo = Api[name];
+        if(apiInfo.auth) {
+          return Api.authedFetch(Object.assign({}, {
+            url   : apiInfo.url,
+            method: apiInfo.method
+          }, options))
+        } else {
+          return Api.fetch(Object.assign({}, {
+            url   : apiInfo.url,
+            method: apiInfo.method
+          }, options))
+        }
+      },
+
+      init ({dispatch, commit}) {
+        dispatch("callApi", {
+          name: "init"
         })
-        .catch(function (error) {
-          console.log(error);
-        });
-
-        // return the Promise via `store.dispatch()` so that we know
-        // when the data has been fetched
-        // return fetchItem(id).then(item => {
-        //   commit('setItem', { id, item })
-        // })
+        .then((result) => {
+          console.log("!!!!!", result);
+        })
+        .catch((error) => {
+          console.log("%%%%%%", error);
+        })
       }
-    },
-
-    mutations: {
-      setSession (state, sessionData) {
-        //console.log("sdt", sessionData);
-        state.session = sessionData;
-       // console.log("!!!!", state);
-        Vue.set(state, "session", sessionData);
-      }
+    
     },
 
     modules: {
       login: LoginModule
-    }    
+    } 
 
   })
 }

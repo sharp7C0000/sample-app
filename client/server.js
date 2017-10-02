@@ -5,6 +5,7 @@ const Vue         = require('vue');
 const Wreck       = require('wreck');
 const Bell        = require('bell');
 const AuthCookie  = require('hapi-auth-cookie');
+const cookie      = require('cookie');
 const Inert       = require('inert');
 const H2O2        = require('h2o2');
 const querystring = require('querystring');
@@ -37,7 +38,15 @@ function createRenderer (bundle, options) {
 
 function render (request, reply) {
 
-  const context = { url: request.params.param, query: request.query, session: request.auth.credentials };
+  const context = { 
+    url      : request.params.param, 
+    query    : request.query, 
+    authToken: (() => {
+      if(request.headers.cookie) {
+        return cookie.parse(request.headers.cookie).gm_authToken 
+      }
+    })()
+  };
 
   renderer.renderToString(context, (err, html) => {
     if (err) {
@@ -69,22 +78,22 @@ function startServer () {
 }
 
 // register plugin
-server.register([AuthCookie, Bell, Inert, H2O2], (err) => {
+server.register([Inert, H2O2], (err) => {
 
-  // auth information setting
-  server.auth.strategy("session", "cookie", {
-    password  : 'a7d5c3c8-7fba-11e7-bb31-be2e44b06b34',
-    isSameSite: "Lax",
-    isSecure  : false
-  });
+  // // auth information setting
+  // server.auth.strategy("session", "cookie", {
+  //   password  : 'a7d5c3c8-7fba-11e7-bb31-be2e44b06b34',
+  //   isSameSite: "Lax",
+  //   isSecure  : false
+  // });
 
-  server.auth.strategy('twitter', 'bell', {
-    provider    : 'twitter',
-    password    : 'a7d5c3c8-7fba-11e7-bb31-be2e44b06b34',
-    clientId    : 'bGKjn0l5Zu92zTBRruN1U8YCo',
-    clientSecret: 'GcdeXsQccarT66eMgVzG9pG8WUPu0XWvHLKw3icyFcd9vpL57G',
-    isSecure    : false
-  });
+  // server.auth.strategy('twitter', 'bell', {
+  //   provider    : 'twitter',
+  //   password    : 'a7d5c3c8-7fba-11e7-bb31-be2e44b06b34',
+  //   clientId    : 'bGKjn0l5Zu92zTBRruN1U8YCo',
+  //   clientSecret: 'GcdeXsQccarT66eMgVzG9pG8WUPu0XWvHLKw3icyFcd9vpL57G',
+  //   isSecure    : false
+  // });
 
   ///////////////// routers /////////////////////////////////
 
@@ -135,12 +144,6 @@ server.register([AuthCookie, Bell, Inert, H2O2], (err) => {
     method: "GET",
     path  : "/{param*}",
     config: {
-      
-      auth: {
-        strategy: 'session',
-        mode    : 'optional'
-      },
-
       handler: function (request, reply) {
         if(isProd) {
           render(request, reply);
@@ -153,42 +156,42 @@ server.register([AuthCookie, Bell, Inert, H2O2], (err) => {
     },
   });
 
-  // twitter auth
-  server.route({
-    method: 'GET',
-    path  : '/auth/twitter',
-    config: {
-      auth   : 'twitter',
-      handler: function(request, reply) {
+  // // twitter auth
+  // server.route({
+  //   method: 'GET',
+  //   path  : '/auth/twitter',
+  //   config: {
+  //     auth   : 'twitter',
+  //     handler: function(request, reply) {
 
-        if (!request.auth.isAuthenticated) {
-          return reply(Boom.unauthorized('Authentication failed: ' + request.auth.error.message));
-        }
+  //       if (!request.auth.isAuthenticated) {
+  //         return reply(Boom.unauthorized('Authentication failed: ' + request.auth.error.message));
+  //       }
 
-        const profile = request.auth.credentials.profile;
+  //       const profile = request.auth.credentials.profile;
 
-        request.cookieAuth.set({
-          twitterId  : profile.id,
-          username   : profile.username,
-          displayName: profile.displayName
-        });
+  //       request.cookieAuth.set({
+  //         twitterId  : profile.id,
+  //         username   : profile.username,
+  //         displayName: profile.displayName
+  //       });
 
-        return reply.redirect('/');
-      }
-    }
-  });
+  //       return reply.redirect('/');
+  //     }
+  //   }
+  // });
 
-  // logout
-  server.route({
-    method : "GET",
-    path   : "/logout",
-    config: {
-      handler: function (request, reply) {
-        request.cookieAuth.clear();
-        reply.redirect('/');
-      }
-    }
-  });
+  // // logout
+  // server.route({
+  //   method : "GET",
+  //   path   : "/logout",
+  //   config: {
+  //     handler: function (request, reply) {
+  //       request.cookieAuth.clear();
+  //       reply.redirect('/');
+  //     }
+  //   }
+  // });
 
   // start server
 

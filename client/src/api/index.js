@@ -1,5 +1,7 @@
 import axios from "axios";
 
+const BASE_URL = "http://0.0.0.0:8080/api";
+
 export function fetch ({
   url, method, data, headers
 }) {
@@ -18,4 +20,25 @@ export function fetch ({
       }
     })
   });
+}
+
+export function authedFetch ({
+  url, method, data, headers, authToken
+}) {
+  return fetch({
+    url, method, data, headers: Object.assign({}, {
+      Authentication: `Bearer ${authToken}`
+    }, headers)
+  })
+}
+
+export const init = {
+  url   : `${BASE_URL}/app/current`,
+  method: "get",
+  auth  : true
+}
+
+export const login = {
+  url   : `${BASE_URL}/auth/authorize`,
+  method: "post"
 }

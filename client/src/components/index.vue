@@ -83,7 +83,17 @@
 
   export default {
 
-    
+    beforeRouteEnter (to, from, next) {
+      // called before the route that renders this component is confirmed.
+      // does NOT have access to `this` component instance,
+      // because it has not been created yet when this guard is called!
+
+      next();
+    },
+
+    mounted () {
+      console.log("!!!", this.$store.getters.isAuthed)
+    }
 
   }
 

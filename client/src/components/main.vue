@@ -77,7 +77,9 @@
 <script>
 
   export default {
-
+    asyncData ({ store, route, router }) {
+      return store.dispatch('init');
+    }
   }
 
 </script>

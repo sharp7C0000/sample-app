@@ -5,6 +5,8 @@ export default context => {
   return new Promise((resolve, reject) => {
     const { app, router, store } = createApp()
 
+    //console.log('fuck fuck', context.authToken);
+
     router.push({
       path : context.url,
       query: context.query
@@ -16,7 +18,7 @@ export default context => {
       if (!matchedComponents.length) {
         return reject({ code: 404 })
       }
-      
+
       // call `asyncData()` on all matched route components
       Promise.all(matchedComponents.map(Component => {
         if (Component.asyncData) {
