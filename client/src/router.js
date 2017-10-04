@@ -12,14 +12,20 @@ export function createRouter () {
       { 
         path     : '/', 
         name     : "index", 
-        component: () => import("./components/index.vue") 
+        component: () => import("./components/index.vue"),
+        meta: {
+          excludesAuth: true
+        }
       },
 
       // login
       { 
         path     : '/login', 
         name     : "login", 
-        component: () => import('./components/login.vue')
+        component: () => import('./components/login.vue'),
+        meta: {
+          excludesAuth: true
+        }
       },
 
       // app

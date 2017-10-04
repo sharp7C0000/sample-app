@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = "http://0.0.0.0:8080/api";
+const BASE_URL = "http://localhost:8080/api";
 
 export function fetch ({
   url, method, data, headers

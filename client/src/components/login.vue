@@ -34,7 +34,7 @@
 
     beforeMount () {
       if(this.loginRequest.status == requestStatus.SUCCESS) {
-        this.$store.dispatch("updateAuthToken");
+        this.$store.dispatch("storeAuthToken");
         this.$router.replace({
           name: "main"
         });

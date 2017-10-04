@@ -4,6 +4,7 @@ import Vuex from 'vuex';
 import * as Api from "api";
 
 import LoginModule from "./modules/login";
+import AuthModule  from "./modules/auth";
 
 import * as Localstorage from "service/localStorage";
 
@@ -18,12 +19,13 @@ export function createStore () {
 
     actions: {
 
-      callApi ({dispatch}, {name, options}) {
+      callApi ({state, dispatch}, {name, options}) {
         const apiInfo = Api[name];
         if(apiInfo.auth) {
           return Api.authedFetch(Object.assign({}, {
-            url   : apiInfo.url,
-            method: apiInfo.method
+            url      : apiInfo.url,
+            method   : apiInfo.method,
+            authToken: state.auth.authToken
           }, options))
         } else {
           return Api.fetch(Object.assign({}, {
@@ -48,8 +50,8 @@ export function createStore () {
     },
 
     modules: {
+      auth : AuthModule,
       login: LoginModule
-    } 
-
+    }
   })
 }

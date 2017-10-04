@@ -3,19 +3,13 @@ import * as Api from "api";
 import Request                   from "classes/request";
 import {status as requestStatus} from "classes/request";
 
-import * as Localstorage from "service/localStorage";
-import * as Cookie       from "service/cookie";
-
 const LOGIN_REQUEST = "LOGIN_REQUEST";
 const LOGIN_SUCCESS = "LOGIN_SUCCESS";
 const LOGIN_FAIL    = "LOGIN_FAIL";
 
-const DELETE_TEMP_AUTH_TOKEN = "UPDATE_AUTH_TOKEN";
-
 const state = function () {
   return {
-    authToken: null,
-    request  : new Request()
+    request: new Request()
   }
 }
 
@@ -36,7 +30,8 @@ const actions = {
         }
       })
       .then((result) => {
-        commit(LOGIN_SUCCESS, result);
+        dispatch("setAuthToken", result);
+        commit(LOGIN_SUCCESS);
         resolve();
       })
       .catch((error) => {
@@ -45,12 +40,6 @@ const actions = {
       })
     
     })
-  },
-
-  updateAuthToken ({commit, state}) {
-    // save token
-    Cookie.set("authToken", state.authToken);
-    commit(DELETE_TEMP_AUTH_TOKEN); 
   }
 }
 
@@ -59,18 +48,13 @@ const mutations = {
     state.request.status = requestStatus.LOADING;
   },
 
-  [LOGIN_SUCCESS] (state, authToken) {
-    state.authToken      = authToken;
+  [LOGIN_SUCCESS] (state) {
     state.request.status = requestStatus.SUCCESS;
   },
 
   [LOGIN_FAIL] (state, error) {
     state.request.status = requestStatus.FAIL;
     state.request.error  = error;
-  },
-
-  [DELETE_TEMP_AUTH_TOKEN] (state) {
-    state.authToken = null;
   }
 }
 

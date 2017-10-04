@@ -4,22 +4,23 @@ export default context => {
   
   return new Promise((resolve, reject) => {
     const { app, router, store } = createApp()
-
-    //console.log('fuck fuck', context.authToken);
-
+    
+    // set auth token
+    store.dispatch("setAuthToken", context.authToken);
+    
     router.push({
       path : context.url,
       query: context.query
     });
-
+    
     router.onReady(() => {
+      
       const matchedComponents = router.getMatchedComponents()
-      // no matched routes, reject with 404
+
       if (!matchedComponents.length) {
         return reject({ code: 404 })
       }
 
-      // call `asyncData()` on all matched route components
       Promise.all(matchedComponents.map(Component => {
         if (Component.asyncData) {
           return Component.asyncData({
@@ -29,11 +30,6 @@ export default context => {
           })
         }
       })).then(() => {
-        // After all preFetch hooks are resolved, our store is now
-        // filled with the state needed to render the app.
-        // When we attach the state to the context, and the `template` option
-        // is used for the renderer, the state will automatically be
-        // serialized and injected into the HTML as `window.__INITIAL_STATE__`.
         context.state = store.state
         resolve(app)
       }).catch(reject)

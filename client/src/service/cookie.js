@@ -4,10 +4,12 @@ function trimedKey (key) {
   return `${COOKIE_PREFIX}${key}`;
 }
 
-export function set(key, value) {
-  var d = new Date();
-  d.setTime(d.getTime() + (30*24*60*60*1000));
-  var expires = "expires="+ d.toUTCString();
+var d = new Date();
+d.setTime(d.getTime() + (30*24*60*60*1000));
+const month = d.toUTCString();
+
+export function set(key, value, expires = month) {
+  var expires = "expires="+ expires;
   document.cookie = trimedKey(key) + "=" + value + ";" + expires + ";path=/";
 }
 
@@ -28,5 +30,5 @@ export function get(key) {
 }
 
 export function remove(key) {
-  set(key, null);
+  set(key, '', 0);
 }

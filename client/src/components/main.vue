@@ -60,7 +60,7 @@
         </div>
 
         <div class="nav-right">
-          <a class="button button-clear" herf="logout">logout</a>
+          <a class="button button-clear" @click="logout">logout</a>
         </div>
 
         
@@ -76,9 +76,24 @@
 
 <script>
 
+  import {mapActions, mapState}    from "vuex";
+
   export default {
     asyncData ({ store, route, router }) {
       return store.dispatch('init');
+    },
+
+    methods: {
+      ...mapActions([
+        "discardAuthToken"
+      ]),
+
+      logout () {
+        this.discardAuthToken();
+        this.$router.replace({
+          name: "index"
+        })
+      }
     }
   }
 
