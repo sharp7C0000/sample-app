@@ -85,7 +85,18 @@
 
   export default {
     
-
+    beforeRouteEnter (to, from, next) {
+      // history back error
+      next((vm) => {
+        if(vm.$store.getters.isAuthed) {
+          next({
+            name: "main"
+          })
+        } else {
+          next();
+        }
+      })
+    }
   }
 
 </script>

@@ -32,6 +32,16 @@
       });
     },
 
+    beforeRouteEnter (to, from, next) {
+      if(!to.query.oauth_token && !to.query.oauth_secret) {
+        next({
+          name: "index"
+        })
+      } else {
+        next();
+      }
+    },
+
     beforeMount () {
       if(this.loginRequest.status == requestStatus.SUCCESS) {
         this.$store.dispatch("storeAuthToken");

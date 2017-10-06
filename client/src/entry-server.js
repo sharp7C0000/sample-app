@@ -6,7 +6,7 @@ export default context => {
     const { app, router, store } = createApp()
     
     // set auth token
-    store.dispatch("setAuthToken", context.authToken);
+    store.dispatch("setServerToken", context.authToken);
     
     router.push({
       path : context.url,

@@ -30,8 +30,8 @@ const actions = {
         }
       })
       .then((result) => {
-        dispatch("setAuthToken", result);
-        commit(LOGIN_SUCCESS);
+        dispatch("setServerToken", result);
+        commit(LOGIN_SUCCESS, result);
         resolve();
       })
       .catch((error) => {

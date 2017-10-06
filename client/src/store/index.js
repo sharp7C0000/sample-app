@@ -6,8 +6,6 @@ import * as Api from "api";
 import LoginModule from "./modules/login";
 import AuthModule  from "./modules/auth";
 
-import * as Localstorage from "service/localStorage";
-
 Vue.use(Vuex);
 
 export function createStore () {

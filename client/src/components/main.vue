@@ -90,9 +90,7 @@
 
       logout () {
         this.discardAuthToken();
-        this.$router.replace({
-          name: "index"
-        })
+        location.reload();
       }
     }
   }
