@@ -9,7 +9,8 @@ const LOGIN_FAIL    = "LOGIN_FAIL";
 
 const state = function () {
   return {
-    request: new Request()
+    request  : new Request(),
+    tempToken: null
   }
 }
 
@@ -30,7 +31,6 @@ const actions = {
         }
       })
       .then((result) => {
-        dispatch("setServerToken", result);
         commit(LOGIN_SUCCESS, result);
         resolve();
       })
@@ -48,8 +48,9 @@ const mutations = {
     state.request.status = requestStatus.LOADING;
   },
 
-  [LOGIN_SUCCESS] (state) {
+  [LOGIN_SUCCESS] (state, result) {
     state.request.status = requestStatus.SUCCESS;
+    state.tempToken      = result;
   },
 
   [LOGIN_FAIL] (state, error) {

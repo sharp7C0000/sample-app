@@ -44,7 +44,7 @@
 
     beforeMount () {
       if(this.loginRequest.status == requestStatus.SUCCESS) {
-        this.$store.dispatch("storeAuthToken");
+        this.$store.dispatch("storeAuthToken", this.$store.state.login.tempToken);
         this.$router.replace({
           name: "main"
         });

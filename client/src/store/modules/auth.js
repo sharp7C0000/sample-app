@@ -1,8 +1,6 @@
 import * as Cookie from "service/cookie";
 
-const SET_SERVER_TOKEN   = "SET_SERVER_TOKEN";
-const STORE_AUTH_TOKEN   = "STORE_AUTH_TOKEN";
-const DISCARD_AUTH_TOKEN = "DISCARD_AUTH_TOKEN";
+const SET_SERVER_TOKEN = "SET_SERVER_TOKEN";
 
 const state = function () {
   return {
@@ -21,7 +19,6 @@ const actions = {
 
   discardAuthToken ({commit, state, dispatch}) {
     Cookie.remove("authToken");
-    commit(DISCARD_AUTH_TOKEN);
   }
 }
 
@@ -36,13 +33,8 @@ const getters = {
 }
 
 const mutations = {
-
   [SET_SERVER_TOKEN] (state, authToken) {
     state.serverToken = authToken;
-  },
-
-  [DISCARD_AUTH_TOKEN] (state) {
-    state.authToken = null;
   }
 }
 

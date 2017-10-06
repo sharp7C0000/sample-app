@@ -69,8 +69,6 @@
         </a>
       </section>
 
-      <router-link :to="{name: 'main'}">fuck you</router-link>
-
       <footer>
         <h5>
           Created by <a target="_blank" href="https://github.com/sharp7c0000">sharp7c0000</a>
