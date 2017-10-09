@@ -13,8 +13,8 @@ export function fetch ({
       resolve(resp.data)
     })
     .catch((error) => {
-      if(error.data) {
-        reject(error.data.message)
+      if(error.response.data) {
+        reject(error.response.data.message)
       } else {
         reject("server error");
       }
@@ -27,7 +27,7 @@ export function authedFetch ({
 }) {
   return fetch({
     url, method, data, headers: Object.assign({}, {
-      Authentication: `Bearer ${authToken}`
+      Authorization: `Bearer ${authToken}`
     }, headers)
   })
 }

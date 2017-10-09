@@ -31,7 +31,7 @@ case class JsonIng[A](action: Action[A]) extends Action[A] with Results {
       action(request)
     }
     catch {
-      case e: Exception => Future.successful(BadRequest(Json.obj("message" -> "Server error")))
+      case e: Exception => Future.successful(BadRequest(Json.obj("message" -> e.getMessage)))
     }
   }
 

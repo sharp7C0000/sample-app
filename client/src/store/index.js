@@ -17,13 +17,13 @@ export function createStore () {
 
     actions: {
 
-      callApi ({state, dispatch}, {name, options}) {
+      callApi ({state, getters, dispatch}, {name, options}) {
         const apiInfo = Api[name];
         if(apiInfo.auth) {
           return Api.authedFetch(Object.assign({}, {
             url      : apiInfo.url,
             method   : apiInfo.method,
-            authToken: state.auth.authToken
+            authToken: getters.isAuthed
           }, options))
         } else {
           return Api.fetch(Object.assign({}, {
