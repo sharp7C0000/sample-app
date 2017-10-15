@@ -3,6 +3,7 @@ package actions
 import javax.inject._
 import play.api._
 import play.api.mvc._
+import play.api.mvc.Results
 
 import scala.concurrent.Future
 import scala.concurrent.duration._
@@ -12,36 +13,22 @@ import play.api.libs.json.Json
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
 
-import play.api.libs.ws._
-import play.api.libs.oauth.OAuthCalculator
-
-import play.api.libs.oauth._
-import play.api.libs.oauth.OAuth._
-
-import pdi.jwt._
-import pdi.jwt.JwtSession
-import pdi.jwt.JwtSession._
-
+import core.ResponseException
 import models.Session
-
-case class JsonIng[A](action: Action[A]) extends Action[A] with Results {
-
-  def apply(request: Request[A]): Future[Result] = {
-    try {
-      action(request)
-    }
-    catch {
-      case e: Exception => Future.successful(BadRequest(Json.obj("message" -> e.getMessage)))
-    }
-  }
-
-  override def parser           = action.parser
-  override def executionContext = action.executionContext
-}
 
 class JsonAction @Inject() (parser: BodyParsers.Default)(implicit ec: ExecutionContext) extends ActionBuilderImpl(parser) {
   override def invokeBlock[A](request: Request[A], block: (Request[A]) => Future[Result]) = {
-    block(request)
+    try {
+      block(request)
+    }
+    catch {
+      case e: ResponseException => {
+        Future.successful(e.status(Json.obj("message" -> e.getMessage)))
+      }
+      case e: Exception         => {
+        play.Logger.debug(e.getMessage)
+        Future.successful(Results.BadRequest(Json.obj("message" -> "Unexpected server error")))
+      }
+    }
   }
-  override def composeAction[A](action: Action[A]) = new JsonIng(action)
 }

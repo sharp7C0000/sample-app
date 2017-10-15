@@ -14,9 +14,9 @@ export function fetch ({
     })
     .catch((error) => {
       if(error.response.data) {
-        reject(error.response.data.message)
+        reject({code: error.response.status, message: error.response.data.message})
       } else {
-        reject("server error");
+        reject({code: error.response.status, message: "Server not answer"});
       }
     })
   });

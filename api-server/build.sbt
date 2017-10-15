@@ -1,4 +1,4 @@
-name := """api-server"""
+name := """gmeh"""
 organization := "com.sharp7c0000"
 
 version := "1.0-SNAPSHOT"

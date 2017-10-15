@@ -34,15 +34,30 @@ export function createStore () {
       },
 
       init ({dispatch, commit}) {
-        dispatch("callApi", {
-          name: "init"
+
+        return new Promise((reject, resolve) => {
+          dispatch("callApi", {
+            name: "init"
+          })
+          .then((result) => {
+            console.log("!!!!!", result);
+            reolve();
+          })
+          .catch((error) => {
+            if(error.code == 401) {
+              dispatch("discardServerToken")
+  
+              console.log("do not logined")
+
+  
+            }
+
+            
+            reject();
+          })
         })
-        .then((result) => {
-          console.log("!!!!!", result);
-        })
-        .catch((error) => {
-          console.log("%%%%%%", error);
-        })
+
+        
       }
     
     },
