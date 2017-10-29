@@ -79,6 +79,7 @@
   import {mapActions, mapState}    from "vuex";
 
   export default {
+    
     asyncData ({ store, route, router }) {
       return store.dispatch('init');
     },

@@ -35,7 +35,7 @@ const getters = {
     //   console.log('$$$$$$$$$$', state.serverToken);
     //   return state.serverToken;
     // }
-    console.log("%%%%", state.serverToken)
+    //console.log("%%%%", state.serverToken)
     return state.serverToken;
   }
 }

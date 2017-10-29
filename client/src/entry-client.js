@@ -1,11 +1,30 @@
+import Vue from 'vue'
 import { createApp } from './app'
 
 const { app, router, store } = createApp()
 
+// state 할당
+if (window.__INITIAL_STATE__) {
+  store.replaceState(window.__INITIAL_STATE__)
+}
+
+// auth 상태 검사하여 페이지 리다이렉트
+if(router.history.pending.meta.requiresAuth && !store.state.auth.serverToken) {
+  router.replace({
+    name: "index"
+  })
+}
+
+if(!router.history.pending.meta.requiresAuth && store.state.auth.serverToken) {
+  router.replace({
+    name: "main"
+  })
+}
+
 router.onReady(() => {
 
   router.beforeResolve((to, from, next) => {
-    
+
     const matched     = router.getMatchedComponents(to)
     const prevMatched = router.getMatchedComponents(from)
 
@@ -27,8 +46,5 @@ router.onReady(() => {
     }).catch(next)
   })
 
-  if (window.__INITIAL_STATE__) {
-    store.replaceState(window.__INITIAL_STATE__)
-  }
   app.$mount('#app');
 });

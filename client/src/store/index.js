@@ -8,7 +8,7 @@ import AuthModule  from "./modules/auth";
 
 Vue.use(Vuex);
 
-export function createStore () {
+export function createStore (router) {
   return new Vuex.Store({
     
     state: {
@@ -20,11 +20,25 @@ export function createStore () {
       callApi ({state, getters, dispatch}, {name, options}) {
         const apiInfo = Api[name];
         if(apiInfo.auth) {
-          return Api.authedFetch(Object.assign({}, {
-            url      : apiInfo.url,
-            method   : apiInfo.method,
-            authToken: getters.isAuthed
-          }, options))
+
+          return new Promise((resolve, reject) => {
+            return Api.authedFetch(Object.assign({}, {
+              url      : apiInfo.url,
+              method   : apiInfo.method,
+              authToken: getters.isAuthed
+            }, options))
+            .then((result) => {
+              resolve(result);
+            })
+            .catch((error) => {
+              // unauthorize
+              if(error.code == 401) {
+                dispatch("discardServerToken");
+                router.replace("/");
+              }
+              reject(error);
+            })
+          });
         } else {
           return Api.fetch(Object.assign({}, {
             url   : apiInfo.url,
@@ -34,30 +48,17 @@ export function createStore () {
       },
 
       init ({dispatch, commit}) {
-
-        return new Promise((reject, resolve) => {
+        return new Promise((resolve, reject) => {
           dispatch("callApi", {
             name: "init"
           })
           .then((result) => {
-            console.log("!!!!!", result);
-            reolve();
+            resolve();
           })
           .catch((error) => {
-            if(error.code == 401) {
-              dispatch("discardServerToken")
-  
-              console.log("do not logined")
-
-  
-            }
-
-            
-            reject();
+            reject(error);
           })
-        })
-
-        
+        });        
       }
     
     },

@@ -64,7 +64,7 @@
       </figure>
 
       <section class="login">
-        <a class="button button-primary button-large" href="/api/auth/twitter?callbackUrl=http://localhost:8080/login">
+        <a class="button button-primary button-large" href="/api/auth/twitter?callbackUrl=http://localhost:8080/auth/callback">
           <i class="fa fa-twitter" aria-hidden="true"></i> Sign in from Twitter
         </a>
       </section>
@@ -78,23 +78,3 @@
     </div>
   </div>
 </template>
-
-<script>
-
-  export default {
-    
-    beforeRouteEnter (to, from, next) {
-      // history back error
-      next((vm) => {
-        if(vm.$store.getters.isAuthed) {
-          next({
-            name: "main"
-          })
-        } else {
-          next();
-        }
-      })
-    }
-  }
-
-</script>

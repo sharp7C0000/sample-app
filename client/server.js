@@ -28,6 +28,14 @@ server.connection({
   port: 8080 
 });
 
+// server.state('session', {
+//   ttl: null,
+//   isSecure: true,
+//   isHttpOnly: true,
+//   clearInvalid: false, // remove invalid cookies
+//   strictHeader: true // don't allow violations of RFC 6265
+// });
+
 function createRenderer (bundle, options) {
   return createBundleRenderer(bundle, Object.assign(options, {
    template,
@@ -52,6 +60,8 @@ function render (request, reply) {
     if (err) {
       if (err.code === 404) {
         return reply('Page not found').code(404);
+      } else if (err.code === 400) {
+        return reply('Bad request').code(400);
       } else {
         return reply('Internal Server Error').code(500);
       }
@@ -139,6 +149,46 @@ server.register([Inert, H2O2], (err) => {
       }
     }
   });
+
+  server.route({
+    method: "GET",
+    path  : "/auth/callback",
+    config: {
+      handler: function (request, reply) {
+
+        // Do Login
+        Wreck.post("http://localhost:8080/api/auth/authorize", {
+          headers: {
+            "Content-Type": "application/json"
+          },
+          payload: JSON.stringify({
+            oauthToken : request.query.oauth_token,
+            oauthSecret: request.query.oauth_secret
+          })
+        })
+        .then((result) => {
+          console.log(result);
+
+          var cookie_options = {
+            ttl: 365 * 24 * 60 * 60 * 1000, // expires a year from today
+            encoding: 'none', // we already used JWT to encode
+            //isSecure: true, // warm & fuzzy feelings
+            isHttpOnly: false, // prevent client alteration
+            clearInvalid: false, // remove invalid cookies
+            strictHeader: true // don't allow violations of RFC 6265
+          };
+
+          //reply.redirect("/").state('session', "fuck", cookie_options);
+          reply("hoo").state('session', "fuck", cookie_options);
+        })
+        .catch((error) => {
+          console.log('3333', error);
+          reply("bar")
+        })
+        
+      }
+    }
+  })
 
   server.route({
     method: "GET",

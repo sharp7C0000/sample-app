@@ -75,6 +75,7 @@ class AuthController @Inject()(jsonAction: JsonAction, ws: WSClient, ec: Executi
     @return JSON
   */
   def authorize = jsonAction.async(parse.json) { implicit request =>
+  play.Logger.debug(" " + request.body)
     request.body.validate[OAuthTokenPair].fold(
       errors   => throw new Exception("Invalid body parameter"),
       authInfo => {

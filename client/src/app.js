@@ -9,7 +9,7 @@ export function createApp () {
   
   // create router
   const router = createRouter();
-  const store  = createStore();
+  const store  = createStore(router);
 
   sync(store, router);
 
@@ -19,19 +19,20 @@ export function createApp () {
     render: h => h(App)
   })
 
-  router.beforeEach((to, from, next) => {
-    if(to.matched.some(record => record.meta.requiresAuth) && !store.getters.isAuthed) {
-       next({
-        name: "index",
-      })
-    } else if(to.matched.some(record => record.meta.excludesAuth) && store.getters.isAuthed) {
-      next({
-        name: "main"
-      })
-    } else {
-      next();
-    }
-  })
+  // TODO : client 접근 확인 필요
+  // router.beforeEach((to, from, next) => {
+  //   if(to.matched.some(record => record.meta.requiresAuth) && !store.getters.isAuthed) {
+  //      next({
+  //       name: "index",
+  //     })
+  //   } else if(to.matched.some(record => record.meta.excludesAuth) && store.getters.isAuthed) {
+  //     next({
+  //       name: "main"
+  //     })
+  //   } else {
+  //     next();
+  //   }
+  // })
 
   return { app, router, store }
 }
