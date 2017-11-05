@@ -40,7 +40,7 @@ class AppController @Inject()(authedAction: AuthedAction, jsonAction: JsonAction
 
     implicit val session = request.authInfo
 
-    tApi.call(url = "https://api.twitter.com/1.1/users/show.json", method = "get")
+    tApi.call(url = "https://api.twitter.com/1.1/users/show.json", queryParams = Seq(("user_id", session.id)), method = "GET")
     .map { resp =>
       Ok(resp.json("name").as[String].mkString)
     }

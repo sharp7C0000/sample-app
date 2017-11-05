@@ -49,8 +49,10 @@ export default context => {
         // unauthorize..
         if(e.code == 401) {
           router.replace("/");
+          context.state = store.state
           resolve(app);
         } else {
+          console.log(e);
           reject({
             code: 400
           });

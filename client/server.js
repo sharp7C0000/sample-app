@@ -155,7 +155,6 @@ server.register([Inert, H2O2], (err) => {
     path  : "/auth/callback",
     config: {
       handler: function (request, reply) {
-
         // Do Login
         Wreck.post("http://localhost:8080/api/auth/authorize", {
           headers: {
@@ -165,27 +164,23 @@ server.register([Inert, H2O2], (err) => {
             oauthToken : request.query.oauth_token,
             oauthSecret: request.query.oauth_secret
           })
-        })
-        .then((result) => {
-          console.log(result);
-
-          var cookie_options = {
-            ttl: 365 * 24 * 60 * 60 * 1000, // expires a year from today
-            encoding: 'none', // we already used JWT to encode
-            //isSecure: true, // warm & fuzzy feelings
-            isHttpOnly: false, // prevent client alteration
-            clearInvalid: false, // remove invalid cookies
-            strictHeader: true // don't allow violations of RFC 6265
-          };
-
-          //reply.redirect("/").state('session', "fuck", cookie_options);
-          reply("hoo").state('session', "fuck", cookie_options);
-        })
-        .catch((error) => {
-          console.log('3333', error);
-          reply("bar")
-        })
-        
+        }, function(err, res, payload) {
+          if(err) {
+            reply("Cannot Login").code(400);
+          } else {
+            const authToken     = payload.toString();
+            const cookieOptions = {
+              ttl         : 3 * 60 * 60 * 1000, // 서버와 동일
+              encoding    : 'none',
+              isHttpOnly  : false,
+              isSameSite  : false,
+              strictHeader: false,
+              isSecure    : false,
+              path        : "/"
+            };
+            reply.redirect("/").state('gm_authToken', authToken, cookieOptions);
+          }
+        });
       }
     }
   })

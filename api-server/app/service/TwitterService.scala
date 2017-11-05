@@ -26,30 +26,40 @@ import actions.JsonAction
 import models.Session
 import models.User
 
+import play.api.mvc.Results
+
+import core.ResponseException
+
 class TwitterService @Inject()(ws: WSClient, ec: ExecutionContext) {
 
   def call(url: String, method: String, queryParams: Seq[(String, String)] = Seq())(implicit session: Session, ec: ExecutionContext) = {
+    
+    play.Logger.debug(s"Call Twitter api ${url} ${method}")
+    
     ws.url(url)
     .withQueryStringParameters(queryParams.toSeq: _*)
     .sign(OAuthCalculator(TwitterService.KEY, RequestToken(session.accessToken, session.tokenSecret)))
     .execute(method)
     .map(result => {
+
+      play.Logger.debug(s"Twitter server result ${result}")
+
       result.status match {
         case 200 => {
           result
         }
 
         case 401 => {
-          throw new Exception("Authrization Required")
+          throw new ResponseException("Authrization Required", Results.Unauthorized)
         }
 
         case _ => {
-          throw new Exception("Server Error")
+          throw new ResponseException("Server Error", Results.InternalServerError)
         }
       }
     })
     .recover {
-      case errors: Exception => throw new Exception("Fuck You")//BadRequest(Json.obj("message" -> errors.getMessage))
+      case errors: Exception => throw new ResponseException(errors.getMessage, Results.BadRequest)
     }
   }
 }
