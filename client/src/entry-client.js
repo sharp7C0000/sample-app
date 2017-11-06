@@ -9,13 +9,13 @@ if (window.__INITIAL_STATE__) {
 }
 
 // auth 상태 검사하여 페이지 리다이렉트
-if(router.history.pending.meta.requiresAuth && !store.state.auth.serverToken) {
+if(router.history.pending.meta.requiresAuth && !store.getters.isAuthed) {
   router.replace({
     name: "index"
   })
 }
 
-if(!router.history.pending.meta.requiresAuth && store.state.auth.serverToken) {
+if(!router.history.pending.meta.requiresAuth && store.getters.isAuthed) {
   router.replace({
     name: "main"
   })

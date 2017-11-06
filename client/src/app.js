@@ -19,20 +19,5 @@ export function createApp () {
     render: h => h(App)
   })
 
-  // TODO : client 접근 확인 필요
-  // router.beforeEach((to, from, next) => {
-  //   if(to.matched.some(record => record.meta.requiresAuth) && !store.getters.isAuthed) {
-  //      next({
-  //       name: "index",
-  //     })
-  //   } else if(to.matched.some(record => record.meta.excludesAuth) && store.getters.isAuthed) {
-  //     next({
-  //       name: "main"
-  //     })
-  //   } else {
-  //     next();
-  //   }
-  // })
-
   return { app, router, store }
 }

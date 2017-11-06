@@ -3,7 +3,6 @@ import Vuex from 'vuex';
 
 import * as Api from "api";
 
-import LoginModule from "./modules/login";
 import AuthModule  from "./modules/auth";
 
 Vue.use(Vuex);
@@ -33,7 +32,7 @@ export function createStore (router) {
             .catch((error) => {
               // unauthorize
               if(error.code == 401) {
-                dispatch("discardServerToken");
+                dispatch("discardAuthToken");
                 router.replace("/");
               }
               reject(error);
@@ -53,6 +52,7 @@ export function createStore (router) {
             name: "init"
           })
           .then((result) => {
+            console.log('@@@@@@', result);
             resolve();
           })
           .catch((error) => {
@@ -64,8 +64,7 @@ export function createStore (router) {
     },
 
     modules: {
-      auth : AuthModule,
-      login: LoginModule
+      auth : AuthModule
     }
   })
 }

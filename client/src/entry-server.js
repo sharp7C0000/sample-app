@@ -6,7 +6,7 @@ export default context => {
     const { app, router, store } = createApp()
 
     // set auth token
-    store.dispatch("setServerToken", context.authToken);
+    store.dispatch("setAuthToken", context.authToken);
 
     router.push({
       path : context.url,
@@ -38,8 +38,7 @@ export default context => {
         if (Component.asyncData) {
           return Component.asyncData({
             store,
-            route: router.currentRoute,
-            router: router
+            route: router.currentRoute
           })
         }
       })).then(() => {

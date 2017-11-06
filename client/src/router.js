@@ -15,13 +15,6 @@ export function createRouter () {
         component: () => import("./components/index.vue")
       },
 
-      // login
-      { 
-        path     : '/login', 
-        name     : "login", 
-        component: () => import('./components/login.vue')
-      },
-
       // app
       { 
         path     : "/app", 

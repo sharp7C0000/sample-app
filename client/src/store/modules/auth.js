@@ -1,52 +1,38 @@
 import * as Cookie from "service/cookie";
 
-const SET_SERVER_TOKEN     = "SET_SERVER_TOKEN";
-const DISCARD_SERVER_TOKEN = "DISCARD_SERVER_TOKEN";
+const SET_AUTH_TOKEN     = "SET_AUTH_TOKEN";
+const DISCARD_AUTH_TOKEN = "DISCARD_AUTH_TOKEN";
 
 const state = function () {
   return {
-    serverToken: null
+    authToken: null
   }
 }
 
 const actions = {
-  storeAuthToken ({state, commit}, authToken) {
-    Cookie.set("authToken", authToken);
-  },
-
-  setServerToken ({commit, state, dispatch}, authToken) {
-    commit(SET_SERVER_TOKEN, authToken);
-  },
-
-  discardServerToken ({commit, state, dispatch}) {
-    commit(DISCARD_SERVER_TOKEN);
+  setAuthToken ({commit, state, dispatch}, authToken) {
+    commit(SET_AUTH_TOKEN, authToken);
   },
 
   discardAuthToken ({commit, state, dispatch}) {
     Cookie.remove("authToken");
+    commit(DISCARD_AUTH_TOKEN);
   }
 }
 
 const getters = {
   isAuthed (state) {
-    // try {
-    //   return Cookie.get("authToken")
-    // } catch (e) {
-    //   console.log('$$$$$$$$$$', state.serverToken);
-    //   return state.serverToken;
-    // }
-    //console.log("%%%%", state.serverToken)
-    return state.serverToken;
+    return state.authToken;
   }
 }
 
 const mutations = {
-  [SET_SERVER_TOKEN] (state, authToken) {
-    state.serverToken = authToken;
+  [SET_AUTH_TOKEN] (state, authToken) {
+    state.authToken = authToken;
   },
 
-  [DISCARD_SERVER_TOKEN] (state) {
-    state.serverToken = null;
+  [DISCARD_AUTH_TOKEN] (state) {
+    state.authToken = null;
   }
 }
 
