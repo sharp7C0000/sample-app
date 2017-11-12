@@ -1,5 +1,7 @@
 package controllers
 
+import play.api.Configuration
+
 import javax.inject._
 import play.api._
 import play.api.mvc._
@@ -25,8 +27,12 @@ import pdi.jwt.JwtSession._
 import actions.JsonAction
 import models.Session
 
+import scala.concurrent.duration._
+
+import service.MongoLabService
+
 @Singleton
-class AuthController @Inject()(jsonAction: JsonAction, ws: WSClient, ec: ExecutionContext, cc: ControllerComponents) extends AbstractController(cc) {
+class AuthController @Inject()(jsonAction: JsonAction, ws: WSClient, ec: ExecutionContext, cc: ControllerComponents, config: Configuration, dbService: MongoLabService) extends AbstractController(cc) {
 
   implicit val iEc = ec
 
@@ -87,11 +93,18 @@ class AuthController @Inject()(jsonAction: JsonAction, ws: WSClient, ec: Executi
           if(result.status == 200) {
             
             // db에서 회원가입여부 조회하여 유저정보 생성
+            dbService.call("https://api.mlab.com/api/1/databases", "GET")
+            .map { resp =>
+              play.Logger.debug("!!!!" + resp)
+            }
 
             var session = JwtSession()
             val s       = Session(result.json("id_str").as[String], authInfo.oauthToken, authInfo.oauthSecret)
             session = session + ("session", s)
-            Ok(session.serialize)
+
+            val expired = config.get[Duration]("play.http.session.maxAge").toMillis
+
+            Ok(Json.obj("expired" -> expired, "authToken" -> session.serialize))
           } else {
             throw new Exception("Auth credential fail")
           }

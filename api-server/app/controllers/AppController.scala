@@ -34,16 +34,25 @@ class AppController @Inject()(authedAction: AuthedAction, jsonAction: JsonAction
   
   implicit val iEc = ec
 
+  /**
+    현재 세션 정보를 통해 로그인한 유저 정보 조회
+    @return JSON
+  */
   def current = (jsonAction andThen authedAction).async { implicit request =>
-
-    //Future.successful(Ok)
-
     implicit val session = request.authInfo
 
     tApi.call(url = "https://api.twitter.com/1.1/users/show.json", queryParams = Seq(("user_id", session.id)), method = "GET")
     .map { resp =>
-      Ok(resp.json("name").as[String].mkString)
+
+      val loginUser = User(
+        resp.json("id_str").as[String].mkString,
+        resp.json("name").as[String].mkString,
+        resp.json("profile_image_url").as[String].mkString
+      )
+
+      play.Logger.debug("Login user info", loginUser)
+
+      Ok(Json.toJson(loginUser))
     }
-    
   }
 }

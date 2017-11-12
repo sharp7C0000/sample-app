@@ -58,7 +58,7 @@ export function createStore (router) {
           .catch((error) => {
             reject(error);
           })
-        });        
+        });
       }
     
     },

@@ -168,9 +168,11 @@ server.register([Inert, H2O2], (err) => {
           if(err) {
             reply("Cannot Login").code(400);
           } else {
-            const authToken     = payload.toString();
+            
+            const result = JSON.parse(payload.toString());
+
             const cookieOptions = {
-              ttl         : 3 * 60 * 60 * 1000, // 서버와 동일
+              ttl         : result.expired,
               encoding    : 'none',
               isHttpOnly  : false,
               isSameSite  : false,
@@ -178,7 +180,8 @@ server.register([Inert, H2O2], (err) => {
               isSecure    : false,
               path        : "/"
             };
-            reply.redirect("/").state('gm_authToken', authToken, cookieOptions);
+            
+            reply.redirect("/").state('gm_authToken', result.authToken, cookieOptions);
           }
         });
       }
